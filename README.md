@@ -1,2 +1,0 @@
-# ott-educativa
-Sistema OTT

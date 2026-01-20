@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mini OTT Educativa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 900px; }
+    video { width: 100%; border-radius: 10px; }
+    #box { display:none; margin-top:16px; padding:14px; border:1px solid #ccc; border-radius:10px; }
+    .opt { display:block; margin:6px 0; }
+    button { margin-top:10px; padding:8px 12px; }
+  </style>
+</head>
+<body>
+
+<h1>Mini OTT Educativa</h1>
+<p>Reproduce el video. Aparecerán preguntas durante la reproducción.</p>
+
+<video id="video" controls>
+  <source src="./clase.mp4" type="video/mp4">
+</video>
+
+<p>
+<strong>Puntaje:</strong> <span id="score">0</span> |
+<strong>Respondidas:</strong> <span id="done">0</span>
+</p>
+
+<div id="box">
+  <div id="question"></div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+  <button onclick="continuar()">Continuar</button>
+</div>
+
+<script>
+let data = [];
+let used = new Set();
+let score = 0, done = 0;
+
+fetch("./interacciones.json")
+  .then(r => r.json())
+  .then(j => data = j);
+
+const video = document.getElementById("video");
+
+video.addEventListener("timeupdate", () => {
+  let t = Math.floor(video.currentTime);
+  data.forEach(q => {
+    if (!used.has(q.time) && t >= q.time) {
+      used.add(q.time);
+      mostrarPregunta(q);
+    }
+  });
+});
+
+function mostrarPregunta(q) {
+  video.pause();
+  document.getElementById("box").style.display = "block";
+  document.getElementById("question").innerHTML = `<b>${q.question}</b>`;
+  const ops = document.getElementById("options");
+  ops.innerHTML = "";
+  q.options.forEach((op,i)=>{
+    ops.innerHTML += `<label class="opt">
+      <input type="radio" name="r" onclick="responder(${i},${q.answer})"> ${op}
+    </label>`;
+  });
+}
+
+function responder(i,a){
+  done++;
+  if(i===a){ score++; document.getElementById("feedback").innerText="✅ Correcto"; }
+  else{ document.getElementById("feedback").innerText="❌ Incorrecto"; }
+  document.getElementById("score").innerText=score;
+  document.getElementById("done").innerText=done;
+}
+
+function continuar(){
+  document.getElementById("box").style.display="none";
+  document.getElementById("feedback").innerText="";
+  video.play();
+}
+</script>
+
+</body>
+</html>
+
