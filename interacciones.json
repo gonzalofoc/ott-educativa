@@ -1,0 +1,22 @@
+[
+  {
+    "time": 5,
+    "question": "¿Qué es una plataforma OTT?",
+    "options": [
+      "Un sistema de streaming sobre IP",
+      "Un protocolo de red",
+      "Un tipo de cable"
+    ],
+    "answer": 0
+  },
+  {
+    "time": 12,
+    "question": "¿Qué permite la interactividad en educación?",
+    "options": [
+      "Solo ver videos",
+      "Participación activa del estudiante",
+      "Aumentar el tamaño del video"
+    ],
+    "answer": 1
+  }
+]
